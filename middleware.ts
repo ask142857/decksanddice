@@ -8,7 +8,7 @@ const isPublicRoute = createRouteMatcher([
   '/onboard(.*)',
   '/games',
   '/games/(.*)',
-  '/leaderboard',
+  '/leaderboard(.*)',
   '/api/games',
   '/api/games/(.*)',
   '/api/leaderboard',
@@ -26,6 +26,8 @@ export default clerkMiddleware(async (auth, request) => {
   if (!isPublicRoute(request)) {
     await auth.protect()
   }
+
+  return NextResponse.next()
 })
 
 export const config = {

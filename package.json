@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed": "npx ts-node --project tsconfig.seed.json scripts/seed-games.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.3.2",
@@ -57,10 +58,14 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.20",
+    "dotenv": "16.4.5",
     "eslint": "^8",
     "eslint-config-next": "^15.0.3",
+    "fast-xml-parser": "4.4.1",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5"
+    "ts-node": "10.9.2",
+    "typescript": "^5",
+    "unsplash-js": "7.0.19"
   }
 }

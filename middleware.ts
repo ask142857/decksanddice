@@ -5,6 +5,13 @@ const isPublicRoute = createRouteMatcher([
   '/',
   '/sign-in(.*)',
   '/sign-up(.*)',
+  '/onboard(.*)',
+  '/games',
+  '/games/(.*)',
+  '/leaderboard',
+  '/api/games',
+  '/api/games/(.*)',
+  '/api/leaderboard',
   '/api/webhooks/(.*)',
 ])
 
@@ -12,9 +19,6 @@ export default clerkMiddleware(async (auth, request) => {
   const { userId } = await auth()
 
   // Redirect signed-in users away from the landing page.
-  // Single-role apps: this redirect is sufficient.
-  // Multi-role apps: update this block to read sessionClaims?.metadata?.role
-  // and redirect to the correct role-specific dashboard path.
   if (userId && request.nextUrl.pathname === '/') {
     return NextResponse.redirect(new URL('/dashboard', request.url))
   }
@@ -27,7 +31,7 @@ export default clerkMiddleware(async (auth, request) => {
 export const config = {
   matcher: [
     // Skip Next.js internals and all static files
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/((?!_next|[^?]*\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
     // Always run for API routes
     '/(api|trpc)(.*)',
   ],

@@ -103,6 +103,7 @@ export default function SignUpPage() {
 
         <SignUp
           signInUrl="/sign-in"
+          afterSignUpUrl="/onboard"
           appearance={{
             variables: isLight ? lightVars : darkVars,
             elements: getClerkElements(isLight),

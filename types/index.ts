@@ -51,7 +51,9 @@ export interface GameLeaderboardEntry {
   user_id: string
   display_name: string
   avatar_url: string | null
-  win_count: number
+  total_wins: number
+  game_id: string
+  game_name: string
 }
 
 export interface WinFormValues {

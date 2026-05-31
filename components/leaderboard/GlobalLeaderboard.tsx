@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { Trophy } from 'lucide-react'
+import type { GameLeaderboardEntry } from '@/types/index'
 
 interface LeaderboardEntry {
   user_id: string
@@ -13,6 +14,7 @@ interface LeaderboardEntry {
 
 interface GlobalLeaderboardProps {
   entries: LeaderboardEntry[]
+  gameLeaderboards?: Record<string, GameLeaderboardEntry[]>
 }
 
 const MEDAL_COLORS = [
@@ -134,7 +136,7 @@ function RankBadge({ rank }: { rank: number }) {
   )
 }
 
-export function GlobalLeaderboard({ entries }: GlobalLeaderboardProps) {
+export function GlobalLeaderboard({ entries, gameLeaderboards }: GlobalLeaderboardProps) {
   return (
     <div className="animate-fade-in">
       {/* Heading */}

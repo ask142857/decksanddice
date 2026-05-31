@@ -29,7 +29,7 @@ export function DashboardShell({ children, role }: DashboardShellProps) {
       <Sidebar
         navItems={navItems}
         collapsed={collapsed}
-        onCollapse={setCollapsed}
+        onToggleCollapse={() => setCollapsed(prev => !prev)}
         mobileOpen={mobileOpen}
         onMobileClose={() => setMobileOpen(false)}
       />

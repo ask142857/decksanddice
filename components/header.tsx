@@ -72,47 +72,23 @@ export function Header({ onMobileMenuOpen }: HeaderProps) {
 
   return (
     <header
+      className="sticky top-0 z-50 h-[60px] flex items-center"
       style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 50,
-        height: '60px',
-        display: 'flex',
-        alignItems: 'center',
         borderBottom: '1px solid var(--border)',
         background: 'color-mix(in srgb, var(--background) 85%, transparent)',
         backdropFilter: 'blur(12px)',
         WebkitBackdropFilter: 'blur(12px)',
       }}
     >
-      <div
-        style={{
-          width: '100%',
-          padding: '0 16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        {/* Left side: hamburger (mobile only) + app name (always) */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-          {/* Hamburger — mobile only, no inline display so md:hidden works */}
+      <div className="w-full px-4 flex items-center justify-between">
+        {/* Left: hamburger (mobile only) + app name */}
+        <div className="flex items-center gap-1">
           {onMobileMenuOpen && (
             <div className="flex md:hidden">
               <button
                 onClick={onMobileMenuOpen}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  padding: '8px',
-                  background: 'transparent',
-                  border: 'none',
-                  borderRadius: '12px',
-                  color: 'var(--text-secondary)',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                }}
+                className="flex items-center justify-center p-2 rounded-xl bg-transparent border-none cursor-pointer transition-all duration-200"
+                style={{ color: 'var(--text-secondary)' }}
                 aria-label="Open navigation menu"
               >
                 <Menu size={18} />
@@ -121,20 +97,15 @@ export function Header({ onMobileMenuOpen }: HeaderProps) {
           )}
           <Link
             href="/"
-            style={{
-              fontWeight: 600,
-              fontSize: '15px',
-              color: 'var(--text-primary)',
-              textDecoration: 'none',
-              letterSpacing: '-0.01em',
-            }}
+            className="font-semibold text-[15px] no-underline tracking-tight"
+            style={{ color: 'var(--text-primary)' }}
           >
             {appName}
           </Link>
         </div>
 
-        {/* Right side: theme toggle + auth — always visible */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto' }}>
+        {/* Right: theme toggle + auth */}
+        <div className="flex items-center gap-2 ml-auto">
           <button
             onClick={toggleTheme}
             className="btn-ghost"

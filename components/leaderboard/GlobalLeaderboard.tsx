@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Trophy } from 'lucide-react'
 import type { GameLeaderboardEntry } from '@/types/index'
+import { GameLeaderboardList } from '@/components/leaderboard/GameLeaderboardList'
 
 interface LeaderboardEntry {
   user_id: string
@@ -137,8 +138,96 @@ function RankBadge({ rank }: { rank: number }) {
 }
 
 export function GlobalLeaderboard({ entries, gameLeaderboards }: GlobalLeaderboardProps) {
+  const [activeView, setActiveView] = useState<'global' | 'by-game'>('global')
+
   return (
     <div className="animate-fade-in">
+      {/* Toggle control */}
+      <div
+        style={{
+          display: 'flex',
+          gap: 8,
+          marginBottom: 28,
+          flexWrap: 'wrap',
+        }}
+        role="group"
+        aria-label="Leaderboard view"
+      >
+        <button
+          onClick={() => setActiveView('global')}
+          aria-pressed={activeView === 'global'}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6,
+            padding: '12px 20px',
+            minHeight: 44,
+            borderRadius: 'var(--radius-md)',
+            fontSize: 14,
+            fontWeight: 500,
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+            border: activeView === 'global'
+              ? '1px solid var(--accent)'
+              : '1px solid var(--border)',
+            background: activeView === 'global'
+              ? 'var(--accent)'
+              : 'rgba(255,255,255,0.03)',
+            color: activeView === 'global'
+              ? '#ffffff'
+              : 'var(--text-secondary)',
+            backdropFilter: activeView === 'global' ? 'none' : 'blur(12px)',
+            WebkitBackdropFilter: activeView === 'global' ? 'none' : 'blur(12px)',
+            boxShadow: activeView === 'global'
+              ? '0 4px 12px var(--accent-glow)'
+              : 'none',
+            minWidth: 120,
+            whiteSpace: 'nowrap',
+          }}
+        >
+          <Trophy size={14} />
+          Global Wins
+        </button>
+
+        <button
+          onClick={() => setActiveView('by-game')}
+          aria-pressed={activeView === 'by-game'}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6,
+            padding: '12px 20px',
+            minHeight: 44,
+            borderRadius: 'var(--radius-md)',
+            fontSize: 14,
+            fontWeight: 500,
+            cursor: 'pointer',
+            transition: 'all 0.15s ease',
+            border: activeView === 'by-game'
+              ? '1px solid var(--accent)'
+              : '1px solid var(--border)',
+            background: activeView === 'by-game'
+              ? 'var(--accent)'
+              : 'rgba(255,255,255,0.03)',
+            color: activeView === 'by-game'
+              ? '#ffffff'
+              : 'var(--text-secondary)',
+            backdropFilter: activeView === 'by-game' ? 'none' : 'blur(12px)',
+            WebkitBackdropFilter: activeView === 'by-game' ? 'none' : 'blur(12px)',
+            boxShadow: activeView === 'by-game'
+              ? '0 4px 12px var(--accent-glow)'
+              : 'none',
+            minWidth: 120,
+            whiteSpace: 'nowrap',
+          }}
+        >
+          <Trophy size={14} />
+          By Game
+        </button>
+      </div>
+
       {/* Heading */}
       <div className="mb-8">
         <h1
@@ -159,115 +248,137 @@ export function GlobalLeaderboard({ entries, gameLeaderboards }: GlobalLeaderboa
         </span>
       </div>
 
-      {/* Empty state */}
-      {entries.length === 0 && (
+      {/* By-game view */}
+      {activeView === 'by-game' && gameLeaderboards && (
+        <GameLeaderboardList gameLeaderboards={gameLeaderboards} />
+      )}
+
+      {/* By-game view — no data fallback */}
+      {activeView === 'by-game' && !gameLeaderboards && (
         <div
           className="glass-card"
-          style={{
-            padding: '48px 24px',
-            textAlign: 'center',
-          }}
+          style={{ padding: '48px 24px', textAlign: 'center' }}
         >
-          <div style={{ fontSize: 48, marginBottom: 16 }}>🏆</div>
-          <h2
-            className="text-xl font-semibold mb-2"
-            style={{ color: 'var(--text-primary)' }}
-          >
-            No wins logged yet — be the first!
-          </h2>
-          <p className="mb-6" style={{ color: 'var(--text-secondary)', fontSize: 14 }}>
-            Play a game at Decks &amp; Dice, then log your win to claim the top spot.
+          <p style={{ color: 'var(--text-secondary)', fontSize: 14 }}>
+            No game data available yet.
           </p>
-          <Link href="/sign-up" className="btn-primary">
-            Create Account &amp; Log a Win
-          </Link>
         </div>
       )}
 
-      {/* Leaderboard list */}
-      {entries.length > 0 && (
-        <div
-          className="glass-card"
-          style={{ overflow: 'hidden', padding: 0 }}
-        >
-          {entries.map((entry, index) => {
-            const rank = index + 1
-            const isTop3 = rank <= 3
-            const medal = isTop3 ? MEDAL_COLORS[rank - 1] : null
-
-            return (
-              <div
-                key={entry.user_id}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: 16,
-                  padding: '14px 20px',
-                  borderBottom:
-                    index < entries.length - 1
-                      ? '1px solid var(--border)'
-                      : 'none',
-                  background: isTop3 ? medal!.bg : 'transparent',
-                  transition: 'background 0.15s ease',
-                }}
+      {/* Global view */}
+      {activeView === 'global' && (
+        <>
+          {/* Empty state */}
+          {entries.length === 0 && (
+            <div
+              className="glass-card"
+              style={{
+                padding: '48px 24px',
+                textAlign: 'center',
+              }}
+            >
+              <div style={{ fontSize: 48, marginBottom: 16 }}>🏆</div>
+              <h2
+                className="text-xl font-semibold mb-2"
+                style={{ color: 'var(--text-primary)' }}
               >
-                <RankBadge rank={rank} />
+                No wins logged yet — be the first!
+              </h2>
+              <p className="mb-6" style={{ color: 'var(--text-secondary)', fontSize: 14 }}>
+                Play a game at Decks &amp; Dice, then log your win to claim the top spot.
+              </p>
+              <Link href="/sign-up" className="btn-primary">
+                Create Account &amp; Log a Win
+              </Link>
+            </div>
+          )}
 
-                <Avatar
-                  avatarUrl={entry.avatar_url}
-                  displayName={entry.display_name}
-                  size={38}
-                />
+          {/* Leaderboard list */}
+          {entries.length > 0 && (
+            <div
+              className="glass-card"
+              style={{ overflow: 'hidden', padding: 0 }}
+            >
+              {entries.map((entry, index) => {
+                const rank = index + 1
+                const isTop3 = rank <= 3
+                const medal = isTop3 ? MEDAL_COLORS[rank - 1] : null
 
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <p
-                    className="font-medium"
+                return (
+                  <div
+                    key={entry.user_id}
                     style={{
-                      color: 'var(--text-primary)',
-                      fontSize: 15,
-                      whiteSpace: 'nowrap',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 16,
+                      padding: '14px 20px',
+                      borderBottom:
+                        index < entries.length - 1
+                          ? '1px solid var(--border)'
+                          : 'none',
+                      background: isTop3 ? medal!.bg : 'transparent',
+                      transition: 'background 0.15s ease',
                     }}
                   >
-                    {entry.display_name}
-                  </p>
-                </div>
+                    <RankBadge rank={rank} />
 
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 6,
-                    flexShrink: 0,
-                  }}
-                >
-                  <Trophy
-                    size={14}
-                    color={isTop3 ? medal!.icon : 'var(--text-tertiary)'}
-                  />
-                  <span
-                    className="font-semibold"
-                    style={{
-                      fontSize: 15,
-                      color: isTop3 ? medal!.icon : 'var(--text-primary)',
-                    }}
-                  >
-                    {entry.total_wins}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 12,
-                      color: 'var(--text-tertiary)',
-                    }}
-                  >
-                    {entry.total_wins === 1 ? 'win' : 'wins'}
-                  </span>
-                </div>
-              </div>
-            )
-          })}
-        </div>
+                    <Avatar
+                      avatarUrl={entry.avatar_url}
+                      displayName={entry.display_name}
+                      size={38}
+                    />
+
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <p
+                        className="font-medium"
+                        style={{
+                          color: 'var(--text-primary)',
+                          fontSize: 15,
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {entry.display_name}
+                      </p>
+                    </div>
+
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 6,
+                        flexShrink: 0,
+                      }}
+                    >
+                      <Trophy
+                        size={14}
+                        color={isTop3 ? medal!.icon : 'var(--text-tertiary)'}
+                      />
+                      <span
+                        className="font-semibold"
+                        style={{
+                          fontSize: 15,
+                          color: isTop3 ? medal!.icon : 'var(--text-primary)',
+                        }}
+                      >
+                        {entry.total_wins}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: 12,
+                          color: 'var(--text-tertiary)',
+                        }}
+                      >
+                        {entry.total_wins === 1 ? 'win' : 'wins'}
+                      </span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </>
       )}
     </div>
   )

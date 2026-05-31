@@ -19,74 +19,42 @@ interface SidebarProps {
   onMobileClose: () => void
 }
 
-const borderBtnStyle: React.CSSProperties = {
-  position: 'absolute',
-  right: -10,
-  top: 20,
-  width: 20,
-  height: 20,
-  borderRadius: '50%',
-  background: 'var(--surface-raised)',
-  border: '1px solid var(--border-strong)',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  cursor: 'pointer',
-  color: 'var(--text-secondary)',
-  transition: 'border-color 0.15s ease, color 0.15s ease',
-  zIndex: 1,
-  padding: 0,
-}
-
 export function Sidebar({ navItems, collapsed, mobileOpen, onToggleCollapse, onMobileClose }: SidebarProps) {
   const pathname = usePathname()
 
   return (
     <>
-      {/* Mobile backdrop — full screen, header stays above via z-50 */}
+      {/* Mobile backdrop */}
       <div
         onClick={onMobileClose}
         aria-hidden="true"
+        className="md:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm transition-opacity duration-300"
         style={{
-          position: 'fixed',
-          inset: 0,
-          background: 'rgba(0,0,0,0.5)',
-          backdropFilter: 'blur(4px)',
-          WebkitBackdropFilter: 'blur(4px)',
-          zIndex: 40,
           opacity: mobileOpen ? 1 : 0,
           pointerEvents: mobileOpen ? 'auto' : 'none',
-          transition: 'opacity 0.3s ease',
         }}
-        className="md:hidden"
       />
 
-      {/* Wrapper: fixed overlay on mobile, relative in-flow on desktop */}
+      {/* Sidebar wrapper: fixed overlay on mobile, relative in-flow on desktop */}
       <div
-        style={{ flexShrink: 0 }}
         className={[
           'fixed top-[60px] left-0 z-50 h-[calc(100vh-60px)]',
-          'md:relative md:top-auto md:h-full md:z-auto',
+          'md:relative md:top-auto md:h-full md:z-auto md:translate-x-0',
           mobileOpen ? 'translate-x-0' : '-translate-x-full',
-          'md:translate-x-0',
           'transition-transform duration-300 ease-in-out',
         ].join(' ')}
+        style={{ flexShrink: 0 }}
       >
         {/* Sidebar panel */}
         <aside
+          className="h-full flex flex-col overflow-y-auto overflow-x-hidden transition-[width] duration-200"
           style={{
             width: collapsed ? '60px' : '220px',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
             background: 'var(--surface)',
             borderRight: '1px solid var(--border)',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-            transition: 'width 0.2s ease',
           }}
         >
-          <nav style={{ flex: 1, padding: '8px', paddingTop: '13.5px', paddingRight: '15px', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+          <nav className="flex-1 flex flex-col gap-0.5 p-2 pt-3">
             {navItems.map((item) => {
               const bestMatch = navItems
                 .filter(n => pathname === n.href || pathname.startsWith(n.href + '/'))
@@ -116,7 +84,7 @@ export function Sidebar({ navItems, collapsed, mobileOpen, onToggleCollapse, onM
                 >
                   <Icon size={16} style={{ flexShrink: 0 }} />
                   {!collapsed && (
-                    <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <span className="overflow-hidden text-ellipsis whitespace-nowrap">
                       {item.label}
                     </span>
                   )}
@@ -126,17 +94,33 @@ export function Sidebar({ navItems, collapsed, mobileOpen, onToggleCollapse, onM
           </nav>
         </aside>
 
-        {/* Desktop: collapse/expand button on border line */}
+        {/* Desktop collapse/expand toggle button on border line */}
         <div className="hidden md:block">
           <button
             onClick={onToggleCollapse}
-            style={borderBtnStyle}
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+            style={{
+              position: 'absolute',
+              right: -10,
+              top: 20,
+              width: 20,
+              height: 20,
+              borderRadius: '50%',
+              background: 'var(--surface-raised)',
+              border: '1px solid var(--border-strong)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              color: 'var(--text-secondary)',
+              transition: 'border-color 0.15s ease, color 0.15s ease',
+              zIndex: 1,
+              padding: 0,
+            }}
           >
             {collapsed ? <ChevronRight size={10} /> : <ChevronLeft size={10} />}
           </button>
         </div>
-
       </div>
     </>
   )
